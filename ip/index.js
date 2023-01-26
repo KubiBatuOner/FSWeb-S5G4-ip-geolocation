@@ -1,26 +1,25 @@
 //axios import buraya gelecek
+import axios from "axios";
 
 var benimIP;
-
 
 // ------------ değiştirmeyin --------------
 // licensed to Ergineer 2022
 require("babel-core/register");
 require("babel-polyfill");
-async function ipAdresimiAl(){
-	await axios({
-		method: 'get',
-		url: 'https://apis.ergineer.com/ipadresim',
-	})
-	.then(function (response) {
-		return response.data
-	})
-	.then(function (a) {
-		benimIP=a
-	});
-}				
+async function ipAdresimiAl() {
+  await axios({
+    method: "get",
+    url: "https://apis.ergineer.com/ipadresim",
+  })
+    .then(function (response) {
+      return response.data;
+    })
+    .then(function (a) {
+      benimIP = a;
+    });
+}
 // ------------ değiştirmeyin --------------
-
 
 /*
 	ADIM 1: axios kullanarak, aşağıdaki URL'ye GET sorgusu atacağız
@@ -67,6 +66,63 @@ async function ipAdresimiAl(){
 	Örnek dinamik URL kullanımı: var url = "https://apis.ergineer.com/ipgeoapi/"+benimIP; 
 */
 
-
-
 //kodlar buraya gelecek
+
+function kartOluştur(obje) {
+  const newCard = document.createElement("div");
+  newCard.classList.add("card");
+
+  const flag = document.createElement("img");
+
+  const cardInfo = document.createElement("div");
+  cardInfo.classList.add("card-info");
+
+  const ipAddress = document.createElement("h3");
+  ipAddress.classList.add("ip");
+
+  const countryCode = document.createElement("p");
+  countryCode.classList.add("ulke");
+
+  const enlemBoylam = document.createElement("p");
+  const city = document.createElement("p");
+  const clock = document.createElement("p");
+  const money = document.createElement("p");
+  const isp = document.createElement("p");
+
+  cardInfo.appendChild(ipAddress);
+  cardInfo.appendChild(countryCode);
+  cardInfo.appendChild(enlemBoylam);
+  cardInfo.appendChild(city);
+  cardInfo.appendChild(clock);
+  cardInfo.appendChild(money);
+  cardInfo.appendChild(isp);
+
+  newCard.appendChild(flag);
+  newCard.appendChild(cardInfo);
+
+  flag.src = obje.ülkebayrağı;
+  ipAddress.textContent = obje.sorgu;
+  countryCode.textContent = `${obje.ülke} (${obje.ülkeKodu})`;
+  enlemBoylam.textContent = `Enlem: ${obje.enlem} Boylam: ${obje.boylam}`;
+  city.textContent = `Şehir: ${obje.şehir}`;
+  clock.textContent = `Saat Dilimi: ${obje.saatdilimi}`;
+  money.textContent = `Para Birimi: ${obje.parabirimi}`;
+  isp.textContent = `ISP: ${obje.isp}`;
+
+  return newCard;
+}
+
+const newCards = document.querySelector(".cards");
+
+const connection = async function () {
+  await ipAdresimiAl();
+  axios
+    .get("https://apis.ergineer.com/ipgeoapi/" + benimIP)
+    .then((response) => {
+      newCards.appendChild(kartOluştur(response.data));
+    })
+    .catch((error) => {
+      console.log("Error: " + error);
+    });
+};
+connection();
